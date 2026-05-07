@@ -244,6 +244,45 @@
       margin-top:12px;
     }
 
+    .older-messages {
+      margin-top:18px;
+      border-top:1px solid var(--border);
+      padding-top:16px;
+      display:none;
+    }
+
+    .older-messages.show {
+      display:block;
+    }
+
+    .older-list {
+      margin:0;
+      padding-left:22px;
+      color:var(--text);
+      line-height:1.5;
+    }
+
+    .older-list li {
+      margin-bottom:10px;
+      padding-bottom:10px;
+      border-bottom:1px dashed rgba(120,90,45,.18);
+    }
+
+    .older-name {
+      color:var(--primary);
+      font-weight:900;
+    }
+
+    .older-text {
+      color:var(--muted);
+      margin-top:4px;
+    }
+
+    .show-more-btn {
+      width:100%;
+      margin-top:14px;
+    }
+
     footer { text-align:center; margin-top:22px; color:rgba(31,36,48,.58); font-size:.85rem; }
 
     @media (max-width:860px) {
@@ -264,7 +303,6 @@
 <body>
   <main class="page">
     <header>
-      <div class="badge">Départ d'entreprise · Livre d'or connecté</div>
       <h1>Livre d’or <span class="gradient-text">Roland KATOU</span></h1>
       <p class="subtitle">
         Un espace simple et chaleureux pour laisser un mot, un souvenir, une anecdote ou un message de remerciement à Roland KATOU.
@@ -286,8 +324,8 @@
 
           <form id="guestForm" autocomplete="on">
             <div class="field">
-              <label for="name">Ton prénom / ton équipe</label>
-              <input id="name" name="name" type="text" placeholder="Ex : Sarah — Équipe RH" required />
+              <label for="name">Nom et prénom / ton équipe</label>
+              <input id="name" name="name" type="text" placeholder="Ex : Sarah - Équipe RH" required />
             </div>
 
             <div class="field">
@@ -331,7 +369,7 @@
 
             <div class="field">
               <label for="adminPassword">Mot de passe</label>
-              <input id="adminPassword" type="password" placeholder="Mot de passe Firebase" required />
+              <input id="adminPassword" type="password" placeholder="Mot de passe" required />
             </div>
 
             <button class="btn-primary" type="submit" style="width:100%;">Se connecter</button>
@@ -353,12 +391,14 @@
         <div class="messages-top">
           <div>
             <h2>💬 Messages des collègues</h2>
-            <p class="hint" style="margin:0;">Les messages sont synchronisés en ligne.</p>
+            
           </div>
           <div class="counter" id="counter">0 message</div>
         </div>
 
         <div id="messages" class="messages"></div>
+        <button id="showMoreBtn" class="btn-secondary show-more-btn" type="button" style="display:none;">Voir plus de messages</button>
+        <div id="olderMessages" class="older-messages"></div>
         <div id="empty" class="empty">Aucun message pour le moment.<br>Sois le premier à laisser un mot pour ce départ ✨</div>
       </section>
     </section>
@@ -370,7 +410,7 @@
       </p>
     </section>
 
-    <footer>copyright WYN — Livre d’or digital · Firebase Admin</footer>
+    <footer>copyright WYN — Livre d’or digital</footer>
   </main>
 
   <script type="module">
@@ -394,8 +434,7 @@
       doc,
       onSnapshot,
       query,
-      orderBy,
-      serverTimestamp
+      orderBy
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     import {
@@ -420,6 +459,8 @@
     const photoInput = document.getElementById("photo");
     const photoPreview = document.getElementById("photoPreview");
     const messagesContainer = document.getElementById("messages");
+    const olderMessagesContainer = document.getElementById("olderMessages");
+    const showMoreBtn = document.getElementById("showMoreBtn");
     const emptyState = document.getElementById("empty");
     const counter = document.getElementById("counter");
     const statusBox = document.getElementById("statusBox");
@@ -462,19 +503,29 @@
 
     function renderMessages() {
       messagesContainer.innerHTML = "";
+      olderMessagesContainer.innerHTML = "";
+
       counter.textContent = messages.length + (messages.length > 1 ? " messages" : " message");
       emptyState.style.display = messages.length ? "none" : "block";
 
-      messages.slice().reverse().forEach((item, reversedIndex) => {
-        const originalIndex = messages.length - 1 - reversedIndex;
+      const ordered = messages.slice().reverse();
+      const latestMessages = currentUser ? ordered : ordered.slice(0, 3);
+      const olderMessages = currentUser ? [] : ordered.slice(3);
+
+      latestMessages.forEach((item) => {
+        const originalIndex = messages.findIndex((m) => m.id === item.id);
         const card = document.createElement("article");
         card.className = "message-card";
 
         const image = item.photo ? '<img src="' + item.photo + '" alt="Photo souvenir">' : "";
 
-        let adminDeleteButton = "";
+        let actions = "";
         if(currentUser) {
-          adminDeleteButton = '<button class="btn-card btn-danger admin-delete-btn" type="button" data-id="' + item.id + '">Supprimer ce message</button>';
+          actions =
+            '<div class="card-actions">' +
+              '<button class="btn-card" type="button" data-index="' + originalIndex + '">Exporter ce message en PDF</button>' +
+              '<button class="btn-card btn-danger admin-delete-btn" type="button" data-id="' + item.id + '">Supprimer ce message</button>' +
+            '</div>';
         }
 
         card.innerHTML =
@@ -484,13 +535,34 @@
             '<div class="message-text">' + escapeHTML(item.message || "") + "</div>" +
             '<div class="message-date">' + escapeHTML(item.category || "Message") + " · " + formatDate(item.createdAt || item.date) + "</div>" +
           "</div>" +
-          '<div class="card-actions">' +
-            '<button class="btn-card" type="button" data-index="' + originalIndex + '">Exporter ce message en PDF</button>' +
-            adminDeleteButton +
-          "</div>";
+          actions;
 
         messagesContainer.appendChild(card);
       });
+
+      if(olderMessages.length) {
+        const list = document.createElement("ol");
+        list.className = "older-list";
+
+        olderMessages.forEach((item) => {
+          const li = document.createElement("li");
+          const shortText = (item.message || "").length > 140 ? (item.message || "").slice(0, 140) + "..." : (item.message || "");
+          li.innerHTML =
+            '<div class="older-name">' + escapeHTML(item.name || "Anonyme") + '</div>' +
+            '<div class="older-text">' + escapeHTML(shortText) + '</div>' +
+            '<div class="message-date">' + escapeHTML(item.category || "Message") + " · " + formatDate(item.createdAt || item.date) + "</div>";
+          list.appendChild(li);
+        });
+
+        olderMessagesContainer.appendChild(list);
+        showMoreBtn.style.display = "inline-flex";
+        showMoreBtn.textContent = olderMessagesContainer.classList.contains("show")
+          ? "Masquer les anciens messages"
+          : "Voir les " + olderMessages.length + " autres messages";
+      } else {
+        showMoreBtn.style.display = "none";
+        olderMessagesContainer.classList.remove("show");
+      }
 
       document.querySelectorAll(".btn-card[data-index]").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -505,6 +577,11 @@
         });
       });
     }
+
+    showMoreBtn.addEventListener("click", () => {
+      olderMessagesContainer.classList.toggle("show");
+      renderMessages();
+    });
 
     function compressImage(file, callback) {
       const reader = new FileReader();
@@ -568,7 +645,7 @@
         message: messageInput.value.trim(),
         photo: selectedPhoto || "",
         date: new Date().toISOString(),
-        createdAt: serverTimestamp()
+        createdAt: new Date().toISOString()
       };
 
       if(!newMessage.name || !newMessage.message) {
@@ -588,7 +665,7 @@
         showStatus(statusBox, "✅ Message publié et sauvegardé en ligne.", "success");
       } catch(error) {
         console.error(error);
-        showStatus(statusBox, "❌ Impossible de publier. Vérifie Firebase et les règles Firestore.", "error");
+        showStatus(statusBox, "❌ Publication impossible : " + (error.code || error.message) + ". Vérifie les règles Firestore admin.", "error");
       }
     });
 
