@@ -309,7 +309,7 @@
       </p>
 
       <div class="actions">
-        <a class="btn-link btn-primary" href="#formulaire">Laisser un message</a>
+        <a class="btn-link btn-primary" id="leaveMessageBtn" href="#formulaire">Laisser un message</a>
         <a class="btn-link btn-secondary" href="#admin">Espace administrateur</a>
       </div>
     </header>
@@ -410,7 +410,7 @@
       </p>
     </section>
 
-    <footer>copyright WYN - Livre d’or digital</footer>
+    <footer>copyright WYN — Livre d’or digital</footer>
   </main>
 
   <script type="module">
@@ -420,12 +420,18 @@
       projectId: "livre-d-or-roland-katou",
       storageBucket: "livre-d-or-roland-katou.firebasestorage.app",
       messagingSenderId: "904118142838",
-      appId: "1:904118142838:web:9e33bdb4c54239c8b61c57"
+      appId: "1:904118142838:web:9e33bdb4c54239c8b61c57",
+      measurementId: "G-V6H3XBQ5JF"
     };
 
     const COLLECTION_NAME = "livre_or_roland_katou_messages";
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getAnalytics,
+      logEvent,
+      isSupported
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics.js";
     import {
       getFirestore,
       collection,
@@ -447,6 +453,23 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+
+    let analytics = null;
+
+    isSupported().then((supported) => {
+      if(supported && firebaseConfig.measurementId !== "REMPLACE_PAR_TON_MEASUREMENT_ID") {
+        analytics = getAnalytics(app);
+        logEvent(analytics, "livre_or_page_vue", {
+          page: "livre_or_roland_katou"
+        });
+      }
+    });
+
+    function trackEvent(eventName, params = {}) {
+      if(analytics) {
+        logEvent(analytics, eventName, params);
+      }
+    }
 
     let messages = [];
     let selectedPhoto = "";
@@ -473,6 +496,11 @@
     const adminEmailInfo = document.getElementById("adminEmailInfo");
     const exportAllBtn = document.getElementById("exportAllBtn");
     const logoutBtn = document.getElementById("logoutBtn");
+    const leaveMessageBtn = document.getElementById("leaveMessageBtn");
+
+    leaveMessageBtn.addEventListener("click", () => {
+      trackEvent("clic_laisser_message");
+    });
 
     function showStatus(box, text, type = "") {
       box.style.display = "block";
@@ -630,6 +658,7 @@
           photoPreview.src = selectedPhoto;
           photoPreview.style.display = "block";
           showStatus(statusBox, "✅ Photo ajoutée. Tu peux publier le message.", "success");
+          trackEvent("photo_ajoutee");
         } else {
           showStatus(statusBox, "⚠️ La photo n'a pas pu être chargée. Tu peux publier le message sans photo.", "error");
         }
@@ -663,9 +692,16 @@
         photoPreview.style.display = "none";
 
         showStatus(statusBox, "✅ Message publié et sauvegardé en ligne.", "success");
+        trackEvent("message_publie", {
+          categorie: newMessage.category,
+          avec_photo: !!newMessage.photo
+        });
       } catch(error) {
         console.error(error);
         showStatus(statusBox, "❌ Publication impossible : " + (error.code || error.message) + ". Vérifie les règles Firestore admin.", "error");
+        trackEvent("erreur_publication", {
+          code: error.code || "erreur_inconnue"
+        });
       }
     });
 
@@ -676,10 +712,14 @@
         showStatus(adminStatus, "⏳ Connexion en cours...", "");
         await signInWithEmailAndPassword(auth, adminEmail.value.trim(), adminPassword.value);
         showStatus(adminStatus, "✅ Connexion administrateur réussie.", "success");
+        trackEvent("connexion_admin_reussie");
         adminPassword.value = "";
       } catch(error) {
         console.error(error);
         showStatus(adminStatus, "❌ Connexion impossible. Vérifie l’email, le mot de passe et Firebase Authentication.", "error");
+        trackEvent("connexion_admin_echec", {
+          code: error.code || "erreur_inconnue"
+        });
       }
     });
 
@@ -711,6 +751,7 @@
       try {
         await deleteDoc(doc(db, COLLECTION_NAME, id));
         showStatus(adminStatus, "✅ Message supprimé.", "success");
+        trackEvent("message_supprime_admin");
       } catch(error) {
         console.error(error);
         showStatus(adminStatus, "❌ Suppression refusée. Vérifie les règles Firestore admin.", "error");
@@ -775,7 +816,7 @@
 
       doc.setTextColor(180,125,25);
       doc.setFont("helvetica","bold");
-      doc.setFontSize(18);
+      doc.setFontSize(25);
       doc.text("Départ du Sénat de Côte d'Ivoire", pageW/2, 72, {align:"center"});
 
       doc.setTextColor(35,35,45);
@@ -795,9 +836,7 @@
       const intro = "Un recueil de messages, souvenirs, remerciements et mots chaleureux partagés par les collègues.";
       doc.text(doc.splitTextToSize(intro,130), pageW/2, 165, {align:"center"});
 
-      doc.setFontSize(11);
-      doc.setTextColor(170,170,185);
-      doc.text("copyright WYN", pageW/2, pageH-28, {align:"center"});
+     
     }
 
     function addEndPage(doc) {
@@ -875,7 +914,7 @@
 
       doc.setTextColor(180,180,195);
       doc.setFontSize(9);
-      doc.text("copyright WYN - page " + number, margin, pageH - 16);
+      doc.text("page " + number, margin, pageH - 16);
     }
 
     function exportOneMessagePDF(index) {
@@ -888,6 +927,7 @@
       const doc = new JsPDF({orientation:"portrait", unit:"mm", format:"a4"});
       addMessageToPDF(doc, item, 1);
       doc.save("message-livre-or-roland-katou-" + cleanFileName(item.name) + ".pdf");
+      trackEvent("export_pdf_individuel");
     }
 
     function exportAllMessagesPDF() {
@@ -916,6 +956,9 @@
       addEndPage(doc);
 
       doc.save("livre-or-roland-katou-version-livre.pdf");
+      trackEvent("export_pdf_groupe_admin", {
+        nombre_messages: messages.length
+      });
     }
 
     exportAllBtn.addEventListener("click", exportAllMessagesPDF);
