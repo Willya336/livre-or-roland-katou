@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Livre d'or Roland KATOU - Firebase</title>
+  <title>Livre d'or Roland KATOU - Firebase Admin</title>
 
   <style>
     :root {
@@ -14,16 +14,14 @@
       --primary:#b98218;
       --secondary:#d98043;
       --accent:#2f6f8f;
+      --danger:#b42318;
       --border:rgba(120,90,45,.24);
       --shadow:0 14px 36px rgba(80,60,30,.14);
     }
 
     * { box-sizing:border-box; }
 
-    html {
-      scroll-behavior:smooth;
-      -webkit-text-size-adjust:100%;
-    }
+    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
 
     body {
       margin:0;
@@ -33,11 +31,7 @@
       background:linear-gradient(135deg,#fffaf0 0%,#f4ead8 55%,#ffffff 100%);
     }
 
-    .page {
-      width:min(1080px,94vw);
-      margin:auto;
-      padding:18px 0 42px;
-    }
+    .page { width:min(1080px,94vw); margin:auto; padding:18px 0 42px; }
 
     header, .panel {
       border:1px solid var(--border);
@@ -46,11 +40,7 @@
       box-shadow:var(--shadow);
     }
 
-    header {
-      text-align:center;
-      padding:32px 18px;
-      margin-bottom:18px;
-    }
+    header { text-align:center; padding:32px 18px; margin-bottom:18px; }
 
     .badge {
       display:inline-block;
@@ -73,10 +63,7 @@
       text-transform:uppercase;
     }
 
-    h2 {
-      margin:0 0 10px;
-      font-size:1.42rem;
-    }
+    h2 { margin:0 0 10px; font-size:1.42rem; }
 
     .gradient-text {
       background:linear-gradient(90deg,var(--primary),var(--secondary),var(--accent));
@@ -84,16 +71,9 @@
       color:transparent;
     }
 
-    .subtitle, .hint {
-      color:var(--muted);
-      line-height:1.6;
-    }
+    .subtitle, .hint { color:var(--muted); line-height:1.6; }
 
-    .subtitle {
-      max-width:760px;
-      margin:0 auto 16px;
-      font-size:1.03rem;
-    }
+    .subtitle { max-width:760px; margin:0 auto 16px; font-size:1.03rem; }
 
     .actions {
       display:flex;
@@ -119,28 +99,15 @@
       touch-action:manipulation;
     }
 
-    .btn-primary {
-      background:linear-gradient(135deg,var(--primary),#ff8a00);
-      color:#1b1300;
-    }
+    .btn-primary { background:linear-gradient(135deg,var(--primary),#ff8a00); color:#1b1300; }
 
-    .btn-secondary {
-      background:rgba(255,255,255,.84);
-      color:var(--text);
-      border:1px solid var(--border);
-    }
+    .btn-secondary { background:rgba(255,255,255,.84); color:var(--text); border:1px solid var(--border); }
 
-    .layout {
-      display:grid;
-      grid-template-columns:390px 1fr;
-      gap:18px;
-      align-items:start;
-    }
+    .btn-danger { background:rgba(180,35,24,.10); color:var(--danger); border:1px solid rgba(180,35,24,.35); }
 
-    .panel {
-      padding:22px;
-      margin-bottom:18px;
-    }
+    .layout { display:grid; grid-template-columns:390px 1fr; gap:18px; align-items:start; }
+
+    .panel { padding:22px; margin-bottom:18px; }
 
     .field { margin-bottom:15px; }
 
@@ -165,11 +132,7 @@
       appearance:none;
     }
 
-    textarea {
-      min-height:135px;
-      resize:vertical;
-      line-height:1.45;
-    }
+    textarea { min-height:135px; resize:vertical; line-height:1.45; }
 
     option { color:#111; }
 
@@ -204,17 +167,8 @@
       font-size:.9rem;
     }
 
-    .success {
-      background:#eef9f0;
-      border-color:rgba(50,140,70,.25);
-      color:#256334;
-    }
-
-    .error {
-      background:#fff1f1;
-      border-color:rgba(180,40,40,.25);
-      color:#8a2323;
-    }
+    .success { background:#eef9f0; border-color:rgba(50,140,70,.25); color:#256334; }
+    .error { background:#fff1f1; border-color:rgba(180,40,40,.25); color:#8a2323; }
 
     .messages-top {
       display:flex;
@@ -224,11 +178,7 @@
       margin-bottom:16px;
     }
 
-    .counter {
-      color:var(--primary);
-      font-weight:900;
-      white-space:nowrap;
-    }
+    .counter { color:var(--primary); font-weight:900; white-space:nowrap; }
 
     .messages {
       display:grid;
@@ -254,27 +204,13 @@
 
     .message-body { padding:15px; }
 
-    .message-name {
-      color:var(--primary);
-      font-weight:900;
-      margin-bottom:7px;
-    }
+    .message-name { color:var(--primary); font-weight:900; margin-bottom:7px; }
 
-    .message-text {
-      white-space:pre-wrap;
-      overflow-wrap:break-word;
-      line-height:1.5;
-    }
+    .message-text { white-space:pre-wrap; overflow-wrap:break-word; line-height:1.5; }
 
-    .message-date {
-      margin-top:11px;
-      color:rgba(31,36,48,.58);
-      font-size:.8rem;
-    }
+    .message-date { margin-top:11px; color:rgba(31,36,48,.58); font-size:.8rem; }
 
-    .card-actions {
-      padding:0 15px 15px;
-    }
+    .card-actions { padding:0 15px 15px; display:grid; gap:8px; }
 
     .btn-card {
       width:100%;
@@ -296,12 +232,19 @@
       line-height:1.6;
     }
 
-    footer {
-      text-align:center;
-      margin-top:22px;
-      color:rgba(31,36,48,.58);
-      font-size:.85rem;
+    .admin-panel {
+      display:none;
+      border:2px solid rgba(180,125,25,.28);
+      background:#fffaf0;
     }
+
+    .admin-actions {
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    footer { text-align:center; margin-top:22px; color:rgba(31,36,48,.58); font-size:.85rem; }
 
     @media (max-width:860px) {
       .page { width:94vw; padding-top:12px; }
@@ -329,48 +272,81 @@
 
       <div class="actions">
         <a class="btn-link btn-primary" href="#formulaire">Laisser un message</a>
-        <button class="btn-secondary" type="button" id="exportAllBtn">Exporter tous les messages en PDF</button>
+        <a class="btn-link btn-secondary" href="#admin">Espace administrateur</a>
       </div>
     </header>
 
     <section class="layout">
-      <aside class="panel" id="formulaire">
-        <h2>✨ Laisse ton message</h2>
-        <p class="hint">Ton message sera sauvegardé en ligne et visible par tous les collègues qui ouvrent le lien.</p>
+      <aside>
+        <section class="panel" id="formulaire">
+          <h2>✨ Laisse ton message</h2>
+          <p class="hint">Ton message sera sauvegardé en ligne et visible par tous les collègues qui ouvrent le lien.</p>
 
-        <div id="statusBox" class="status" style="display:none;"></div>
+          <div id="statusBox" class="status" style="display:none;"></div>
 
-        <form id="guestForm" autocomplete="on">
-          <div class="field">
-            <label for="name">Ton prénom / ton équipe</label>
-            <input id="name" name="name" type="text" placeholder="Ex : Sarah — Équipe RH" required />
+          <form id="guestForm" autocomplete="on">
+            <div class="field">
+              <label for="name">Ton prénom / ton équipe</label>
+              <input id="name" name="name" type="text" placeholder="Ex : Sarah — Équipe RH" required />
+            </div>
+
+            <div class="field">
+              <label for="category">Type de message</label>
+              <select id="category" name="category">
+                <option>Message pour Roland KATOU</option>
+                <option>Souvenir entre collègues</option>
+                <option>Anecdote professionnelle</option>
+                <option>Remerciement</option>
+                <option>Mot d'encouragement</option>
+                <option>Message de l'équipe</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="message">Ton message</label>
+              <textarea id="message" name="message" placeholder="Ex : Merci pour ta bonne humeur, ton professionnalisme et tous les bons moments partagés avec l’équipe..." required></textarea>
+            </div>
+
+            <div class="field">
+              <label class="upload-label" for="photo">📸 Ajouter une photo souvenir</label>
+              <input id="photo" name="photo" type="file" accept="image/*" />
+              <img id="photoPreview" class="photo-preview" alt="Aperçu de la photo" />
+            </div>
+
+            <button class="btn-primary" id="publishBtn" type="submit" style="width:100%;">Publier dans le livre d’or</button>
+          </form>
+        </section>
+
+        <section class="panel" id="admin">
+          <h2>🔐 Espace administrateur</h2>
+          <p class="hint">Connexion réservée à l’organisateur. L’admin peut exporter le livre complet et supprimer les messages inappropriés.</p>
+
+          <div id="adminStatus" class="status" style="display:none;"></div>
+
+          <form id="adminLoginForm">
+            <div class="field">
+              <label for="adminEmail">Email administrateur</label>
+              <input id="adminEmail" type="email" placeholder="exemple@email.com" required />
+            </div>
+
+            <div class="field">
+              <label for="adminPassword">Mot de passe</label>
+              <input id="adminPassword" type="password" placeholder="Mot de passe Firebase" required />
+            </div>
+
+            <button class="btn-primary" type="submit" style="width:100%;">Se connecter</button>
+          </form>
+
+          <div id="adminConnectedPanel" class="admin-panel panel" style="margin-top:16px;">
+            <h2>✅ Admin connecté</h2>
+            <p class="hint" id="adminEmailInfo"></p>
+
+            <div class="admin-actions">
+              <button class="btn-primary" type="button" id="exportAllBtn">Exporter le livre d’or complet en PDF</button>
+              <button class="btn-danger" type="button" id="logoutBtn">Se déconnecter</button>
+            </div>
           </div>
-
-          <div class="field">
-            <label for="category">Type de message</label>
-            <select id="category" name="category">
-              <option>Message pour Roland KATOU</option>
-              <option>Souvenir entre collègues</option>
-              <option>Anecdote professionnelle</option>
-              <option>Remerciement</option>
-              <option>Mot d'encouragement</option>
-              <option>Message de l'équipe</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="message">Ton message</label>
-            <textarea id="message" name="message" placeholder="Ex : Merci pour ta bonne humeur, ton professionnalisme et tous les bons moments partagés avec l’équipe..." required></textarea>
-          </div>
-
-          <div class="field">
-            <label class="upload-label" for="photo">📸 Ajouter une photo souvenir</label>
-            <input id="photo" name="photo" type="file" accept="image/*" />
-            <img id="photoPreview" class="photo-preview" alt="Aperçu de la photo" />
-          </div>
-
-          <button class="btn-primary" id="publishBtn" type="submit" style="width:100%;">Publier dans le livre d’or</button>
-        </form>
+        </section>
       </aside>
 
       <section class="panel">
@@ -394,11 +370,10 @@
       </p>
     </section>
 
-    <footer>copyright WYN — Livre d’or digital · Firebase</footer>
+    <footer>copyright WYN — Livre d’or digital · Firebase Admin</footer>
   </main>
 
   <script type="module">
-    // Configuration Firebase intégrée - projet Roland KATOU
     const firebaseConfig = {
       apiKey: "AIzaSyAC1eIArmd7m9i_tY8JQZikd0d8qtAkSLw",
       authDomain: "livre-d-or-roland-katou.firebaseapp.com",
@@ -408,7 +383,6 @@
       appId: "1:904118142838:web:9e33bdb4c54239c8b61c57"
     };
 
-    // 2) Ne modifie pas le nom de collection si tu veux garder le fonctionnement simple
     const COLLECTION_NAME = "livre_or_roland_katou_messages";
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -416,17 +390,28 @@
       getFirestore,
       collection,
       addDoc,
+      deleteDoc,
+      doc,
       onSnapshot,
       query,
       orderBy,
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
     let messages = [];
     let selectedPhoto = "";
+    let currentUser = null;
 
     const form = document.getElementById("guestForm");
     const nameInput = document.getElementById("name");
@@ -438,12 +423,20 @@
     const emptyState = document.getElementById("empty");
     const counter = document.getElementById("counter");
     const statusBox = document.getElementById("statusBox");
-    const exportAllBtn = document.getElementById("exportAllBtn");
 
-    function showStatus(text, type = "") {
-      statusBox.style.display = "block";
-      statusBox.className = "status " + type;
-      statusBox.innerHTML = text;
+    const adminLoginForm = document.getElementById("adminLoginForm");
+    const adminEmail = document.getElementById("adminEmail");
+    const adminPassword = document.getElementById("adminPassword");
+    const adminStatus = document.getElementById("adminStatus");
+    const adminConnectedPanel = document.getElementById("adminConnectedPanel");
+    const adminEmailInfo = document.getElementById("adminEmailInfo");
+    const exportAllBtn = document.getElementById("exportAllBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    function showStatus(box, text, type = "") {
+      box.style.display = "block";
+      box.className = "status " + type;
+      box.innerHTML = text;
     }
 
     function escapeHTML(text) {
@@ -479,6 +472,11 @@
 
         const image = item.photo ? '<img src="' + item.photo + '" alt="Photo souvenir">' : "";
 
+        let adminDeleteButton = "";
+        if(currentUser) {
+          adminDeleteButton = '<button class="btn-card btn-danger admin-delete-btn" type="button" data-id="' + item.id + '">Supprimer ce message</button>';
+        }
+
         card.innerHTML =
           image +
           '<div class="message-body">' +
@@ -488,14 +486,22 @@
           "</div>" +
           '<div class="card-actions">' +
             '<button class="btn-card" type="button" data-index="' + originalIndex + '">Exporter ce message en PDF</button>' +
+            adminDeleteButton +
           "</div>";
 
         messagesContainer.appendChild(card);
       });
 
-      document.querySelectorAll(".btn-card").forEach((btn) => {
+      document.querySelectorAll(".btn-card[data-index]").forEach((btn) => {
         btn.addEventListener("click", () => {
           exportOneMessagePDF(Number(btn.getAttribute("data-index")));
+        });
+      });
+
+      document.querySelectorAll(".admin-delete-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-id");
+          await deleteMessage(id);
         });
       });
     }
@@ -528,10 +534,7 @@
           callback(canvas.toDataURL("image/jpeg", 0.68));
         };
 
-        img.onerror = function() {
-          callback("");
-        };
-
+        img.onerror = function() { callback(""); };
         img.src = e.target.result;
       };
 
@@ -542,16 +545,16 @@
       const file = event.target.files && event.target.files[0];
       if(!file) return;
 
-      showStatus("📸 Préparation de la photo...", "");
+      showStatus(statusBox, "📸 Préparation de la photo...", "");
 
       compressImage(file, (dataUrl) => {
         selectedPhoto = dataUrl;
         if(selectedPhoto) {
           photoPreview.src = selectedPhoto;
           photoPreview.style.display = "block";
-          showStatus("✅ Photo ajoutée. Tu peux publier le message.", "success");
+          showStatus(statusBox, "✅ Photo ajoutée. Tu peux publier le message.", "success");
         } else {
-          showStatus("⚠️ La photo n'a pas pu être chargée. Tu peux publier le message sans photo.", "error");
+          showStatus(statusBox, "⚠️ La photo n'a pas pu être chargée. Tu peux publier le message sans photo.", "error");
         }
       });
     });
@@ -569,12 +572,12 @@
       };
 
       if(!newMessage.name || !newMessage.message) {
-        showStatus("⚠️ Merci de remplir le prénom / équipe et le message.", "error");
+        showStatus(statusBox, "⚠️ Merci de remplir le prénom / équipe et le message.", "error");
         return;
       }
 
       try {
-        showStatus("⏳ Publication du message en cours...", "");
+        showStatus(statusBox, "⏳ Publication du message en cours...", "");
         await addDoc(collection(db, COLLECTION_NAME), newMessage);
 
         form.reset();
@@ -582,26 +585,74 @@
         photoPreview.src = "";
         photoPreview.style.display = "none";
 
-        showStatus("✅ Message publié et sauvegardé en ligne.", "success");
+        showStatus(statusBox, "✅ Message publié et sauvegardé en ligne.", "success");
       } catch(error) {
         console.error(error);
-        showStatus("❌ Impossible de publier. Vérifie la configuration Firebase et les règles Firestore.", "error");
+        showStatus(statusBox, "❌ Impossible de publier. Vérifie Firebase et les règles Firestore.", "error");
       }
     });
+
+    adminLoginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      try {
+        showStatus(adminStatus, "⏳ Connexion en cours...", "");
+        await signInWithEmailAndPassword(auth, adminEmail.value.trim(), adminPassword.value);
+        showStatus(adminStatus, "✅ Connexion administrateur réussie.", "success");
+        adminPassword.value = "";
+      } catch(error) {
+        console.error(error);
+        showStatus(adminStatus, "❌ Connexion impossible. Vérifie l’email, le mot de passe et Firebase Authentication.", "error");
+      }
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+
+      if(user) {
+        adminLoginForm.style.display = "none";
+        adminConnectedPanel.style.display = "block";
+        adminEmailInfo.textContent = "Connecté avec : " + user.email;
+      } else {
+        adminLoginForm.style.display = "block";
+        adminConnectedPanel.style.display = "none";
+      }
+
+      renderMessages();
+    });
+
+    async function deleteMessage(id) {
+      if(!currentUser) return;
+
+      const ok = confirm("Supprimer définitivement ce message ?");
+      if(!ok) return;
+
+      try {
+        await deleteDoc(doc(db, COLLECTION_NAME, id));
+        showStatus(adminStatus, "✅ Message supprimé.", "success");
+      } catch(error) {
+        console.error(error);
+        showStatus(adminStatus, "❌ Suppression refusée. Vérifie les règles Firestore admin.", "error");
+      }
+    }
 
     function listenMessages() {
       const q = query(collection(db, COLLECTION_NAME), orderBy("createdAt", "asc"));
 
       onSnapshot(q, (snapshot) => {
-        messages = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data()
+        messages = snapshot.docs.map((docItem) => ({
+          id: docItem.id,
+          ...docItem.data()
         }));
 
         renderMessages();
       }, (error) => {
         console.error(error);
-        showStatus("❌ Impossible de lire les messages. Vérifie les règles Firestore.", "error");
+        showStatus(statusBox, "❌ Impossible de lire les messages. Vérifie les règles Firestore.", "error");
       });
     }
 
@@ -763,6 +814,11 @@
     }
 
     function exportAllMessagesPDF() {
+      if(!currentUser) {
+        alert("Export groupé réservé à l’administrateur.");
+        return;
+      }
+
       if(!messages.length) {
         alert("Aucun message à exporter pour le moment.");
         return;
